@@ -8,12 +8,24 @@
     <title>Title</title>
     <link rel="stylesheet" href="../static/lib/layui/css/layui.css">
     <style>
-        .wrap{width:1024px;margin: 100px auto;}
+        .inner{width:1280px;margin: 100px auto;}
         #nav-menu{text-align: center;float: left;}
         #nav-menu .layui-nav-tree{width: 100px;}
-        .right-table{float: left;width: 900px;margin-left: 10px;position: relative;}
+        .right-table{float: left;width: 1170px;margin-left: 10px;position: relative;}
         .btn-group{position: absolute;right: 0;top:0;width: 60px;}
         .layui-btn-group .layui-btn{border:none;}
+        #formTable{min-height: 90px;}
+        .layui-table-cell {
+            height: auto;
+            line-height: 28px;
+            padding: 0 15px;
+            position: relative;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            box-sizing: border-box;
+        }
+        .layui-table-view{margin-top: 30px;width: 1170px !important;}
     </style>
 </head>
 <body>
@@ -33,8 +45,19 @@
             </ul>
         </div>
         <div class="right-table">
-            <form class="layui-form" action="">
+            <form class="layui-form" id="formTable" action="">
                 <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="">直接选择或搜索选择</option>
+                                <option value="1">layer</option>
+                                <option value="2">form</option>
+                                <option value="3">layim</option>
+                                <option value="4">element</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
                             <select name="modules" lay-verify="required" lay-search="">
@@ -98,18 +121,18 @@
                 </div>
 
             </form>
-            <table class="layui-table" lay-data="{width: 892, height:332,url:'../persons.json', page:true, id:'idTest'}" lay-filter="demo">
+            <table class="layui-table" id="preInfoTable" lay-data="{width: 892, height:332,url:'../persons.json', page:true, id:'idTest'}" lay-filter="demo">
                 <thead>
                 <tr>
-                    <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
-                    <th lay-data="{field:'id', width:80, sort: true, fixed: true}">ID</th>
+                    <th lay-data="{type:'checkbox'}"></th>
+                    <th lay-data="{field:'id', width:80, sort: true}">ID</th>
                     <th lay-data="{field:'name', width:80}">姓名</th>
                     <th lay-data="{field:'sex', width:80, sort: true}">性别</th>
-                    <th lay-data="{field:'telephone', width:80}">电话</th>
-                    <th lay-data="{field:'symptom', width:135,style:'height:100px;'}">症状</th>
-                    <th lay-data="{field:'medicine', width:135}">药方</th>
-                    <th lay-data="{field:'date', width:80, sort: true}">日期</th>
-                    <th lay-data="{ width:178, align:'center', toolbar: '#barDemo'}"></th>
+                    <th lay-data="{field:'telephone', width:120}">电话</th>
+                    <th lay-data="{field:'symptom', width:200}">症状</th>
+                    <th lay-data="{field:'medicine', width:200}">药方</th>
+                    <th lay-data="{field:'date', width:150, sort: true}">日期</th>
+                    <th lay-data="{ width:200, align:'center', toolbar: '#barDemo'}"></th>
                 </tr>
                 </thead>
             </table>
