@@ -1,19 +1,19 @@
 {
   "code": 0,
   "msg": "",
-  "count": 1000,
+  "count": 4,
   "data":[
     {
       "id":"1000","name":"张三","sex":"男","telephone":"18306390941","symptom":"偏头疼","medicine":"当归200g,桂皮100g","date":"2018-2-12"
     },
     {
-      "id":"1001","name":"李四","sex":"男","telephone":"18306390941","symptom":"偏头疼","medicine":"当归200g,桂皮100g","date":"2018-2-12"
+      "id":"1001","name":"李四","sex":"女","telephone":"18306390941","symptom":"偏头疼","medicine":"当归200g,桂皮100g","date":"2018-2-13"
     },
     {
-      "id":"1002","name":"王五","sex":"男","telephone":"18306390941","symptom":"偏头疼","medicine":"当归200g,桂皮100g","date":"2018-2-12"
+      "id":"1002","name":"王五","sex":"女","telephone":"18306390941","symptom":"偏头疼","medicine":"当归200g,桂皮100g","date":"2018-2-11"
     },
     {
-      "id":"1003", "name":"赵六","sex":"男","telephone":"18306390941","symptom":"偏头疼","medicine":"当归200g,桂皮100g","date":"2018-2-12"
+      "id":"1003", "name":"赵六","sex":"男","telephone":"18306390941","symptom":"偏头疼","medicine":"当归200g,桂皮100g","date":"2018-2-18"
     }
   ]
 }
