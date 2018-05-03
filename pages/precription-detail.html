@@ -8,12 +8,17 @@
     <title>Title</title>
     <link rel="stylesheet" href="../static/lib/layui/css/layui.css">
     <style>
-        .wrap{width:1024px;margin: 100px auto;}
+        .inner{width:1280px;margin: 100px auto;}
         #nav-menu{text-align: center;float: left;}
         #nav-menu .layui-nav-tree{width: 100px;}
-        .right-table{float: left;width: 900px;margin-left: 10px;position: relative;}
-        .btn-group{position: absolute;right: 0;top:0;width: 60px;}
-        .layui-btn-group .layui-btn{border:none;}
+        .right-table{float: left;width: 1170px;margin-left: 10px;position: relative;}
+        .layui-btn-group .layui-btn{border:1px solid #fff;}
+        #formTable{min-height: 90px;}
+        .layui-table-cell {height: auto;line-height: 28px;padding: 0 15px;position: relative;overflow: hidden;text-overflow: ellipsis;white-space: normal; box-sizing: border-box;}
+        .layui-table-view{margin-top: 30px;width: 1170px !important;}
+        .layui-form-item .layui-input-inline{margin-bottom: 5px;width: 180px;}
+        #formTable .layui-inline{display: block;}
+        #select_prod{line-height: 60px;text-align: center;}
     </style>
 </head>
 <body>
@@ -33,11 +38,11 @@
             </ul>
         </div>
         <div class="right-table">
-            <form class="layui-form" action="">
+            <form class="layui-form" id="formTable" action="">
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <div class="layui-input-inline">
-                            <select name="modules" lay-verify="required" lay-search="">
+                        <div class="layui-input-inline proSelect">
+                            <select name="modules" lay-verify="required" lay-search=""  id="zcySelect">
                                 <option value="">直接选择或搜索选择</option>
                                 <option value="1">layer</option>
                                 <option value="2">form</option>
@@ -90,31 +95,48 @@
                             </select>
                         </div>
                     </div>
-                    <div class="layui-btn-group btn-group">
-                        <button class="layui-btn" type="button">增加</button>
-                        <button class="layui-btn" type="button">编辑</button>
-                        <button class="layui-btn" type="button">删除</button>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="modules" lay-verify="required" lay-search="">
+                                <option value="">直接选择或搜索选择</option>
+                                <option value="1">layer</option>
+                                <option value="2">form</option>
+                                <option value="3">layim</option>
+                                <option value="4">element</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+                <div class="layui-btn-group btn-group">
+                    <button class="layui-btn" type="button" id="addSelect">添加选择框</button>
+                    <button class="layui-btn" type="button" id="addSelectDetail">添加详情</button>
+                    <button class="layui-btn" type="button" id="addIllDetail">添加病情</button>
 
+                </div>
             </form>
-            <table class="layui-table" lay-data="{width: 892, height:332,url:'../persons.json', page:true, id:'idTest'}" lay-filter="demo">
+            <table class="layui-table" id="preInfoTable" lay-data="{width: 892, height:332,url:'../persons.json', page:true, id:'idTest'}" lay-filter="demo">
                 <thead>
                 <tr>
-                    <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
-                    <th lay-data="{field:'id', width:80, sort: true, fixed: true}">ID</th>
+                    <th lay-data="{type:'checkbox'}"></th>
+                    <th lay-data="{field:'id', width:80, sort: true}">ID</th>
                     <th lay-data="{field:'name', width:80}">姓名</th>
                     <th lay-data="{field:'sex', width:80, sort: true}">性别</th>
-                    <th lay-data="{field:'telephone', width:80}">电话</th>
-                    <th lay-data="{field:'symptom', width:135,style:'height:100px;'}">症状</th>
-                    <th lay-data="{field:'medicine', width:135}">药方</th>
-                    <th lay-data="{field:'date', width:80, sort: true}">日期</th>
-                    <th lay-data="{ width:178, align:'center', toolbar: '#barDemo'}"></th>
+                    <th lay-data="{field:'telephone', width:120}">电话</th>
+                    <th lay-data="{field:'symptom', width:200}">症状</th>
+                    <th lay-data="{field:'medicine', width:200}">药方</th>
+                    <th lay-data="{field:'date', width:150, sort: true}">日期</th>
+                    <th lay-data="{ width:200, align:'center', toolbar: '#barDemo'}"></th>
                 </tr>
                 </thead>
             </table>
         </div>
         <div style="clear:both"></div>
+    </div>
+</div>
+<!--弹窗内容-->
+<div id="select_prod" class="layui-form" hidden="hidden">
+    <div class="layui-input-inline">
+        <input type="text" name="text" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
     </div>
 </div>
 <script type="text/html" id="barDemo">
@@ -153,6 +175,57 @@
             active[type] ? active[type].call(this) : '';
         });
     });
+    function renderForm(){
+        layui.use('form', function(){
+            var form = layui.form;
+            form.render();
+        });
+    }
+    var html='<div class="layui-inline">'+
+            '<div class="layui-input-inline">'+
+            '<select name="modules" lay-verify="required" lay-search="">'+
+            '<option value="">直接选择或搜索选择</option>'+
+            '</select>'+
+            '</div>'+
+            '</div>';
+
+    $("#addSelect").on('click',function () {
+        $('#formTable .layui-form-item').append(html);
+        renderForm();//表单重新渲染，要不然添加完显示不出来新的option
+    });
+    $('#addSelectDetail').on('click',function () {
+        addProductClassify();
+        renderForm();//表单重新渲染，要不然添加完显示不出来新的option
+    });
+    //增加产品类别按钮点击事件
+    function addProductClassify(){
+        layer.open({
+            type:1,
+            btn:['确定','取消'],
+            content:$("#select_prod"),
+            title:"名称",
+            area:['270px','160px'],
+            //当前层索引参数（index）、当前层的DOM对象（layero）
+            yes:function(index,layero){
+                //获取input输入的值
+                var ivalue=$(layero).find("input").val();
+                //获取要添加的option的索引
+                var sIndex=$("#zcySelect")[0].options.length-1;
+                if(ivalue==null||ivalue==''){
+                    layer.msg("请输入产品类别")
+                }
+                else{
+                    layer.msg("输入的产品类别是："+ivalue);
+                    //为select添加option
+                    $("#zcySelect").append("<option value="+sIndex+">"+ivalue+"</option>");
+                    renderForm();//表单重新渲染，要不然添加完显示不出来新的option
+                    layer.close(index);
+                }
+                $(layero).find("input").val('');
+            }
+        })
+    }
+
 </script>
 </body>
 </html>
