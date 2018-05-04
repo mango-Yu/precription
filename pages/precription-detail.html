@@ -5,6 +5,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <title>Title</title>
     <link rel="stylesheet" href="../static/lib/layui/css/layui.css">
     <style>
@@ -19,6 +20,7 @@
         .layui-form-item .layui-input-inline{margin-bottom: 5px;width: 180px;}
         #formTable .layui-inline{display: block;}
         #select_prod{line-height: 60px;text-align: center;}
+        #IllDetail .layui-form-item{margin: 25px 0 5px 0;}
     </style>
 </head>
 <body>
@@ -114,20 +116,8 @@
 
                 </div>
             </form>
-            <table class="layui-table" id="preInfoTable" lay-data="{width: 892, height:332,url:'../persons.json', page:true, id:'idTest'}" lay-filter="demo">
-                <thead>
-                <tr>
-                    <th lay-data="{type:'checkbox'}"></th>
-                    <th lay-data="{field:'id', width:80, sort: true}">ID</th>
-                    <th lay-data="{field:'name', width:80}">姓名</th>
-                    <th lay-data="{field:'sex', width:80, sort: true}">性别</th>
-                    <th lay-data="{field:'telephone', width:120}">电话</th>
-                    <th lay-data="{field:'symptom', width:200}">症状</th>
-                    <th lay-data="{field:'medicine', width:200}">药方</th>
-                    <th lay-data="{field:'date', width:150, sort: true}">日期</th>
-                    <th lay-data="{ width:200, align:'center', toolbar: '#barDemo'}"></th>
-                </tr>
-                </thead>
+            <table class="layui-table" id="preInfoTable" lay-data="{width: 892, height:300,id:'tableBox'}" lay-filter="preInfoTable">
+
             </table>
         </div>
         <div style="clear:both"></div>
@@ -139,6 +129,52 @@
         <input type="text" name="text" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
     </div>
 </div>
+<form id="IllDetail" class="layui-form" hidden="hidden" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="name" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            <input type="hidden" name="id" value="0" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">性别</label>
+        <div class="layui-input-block">
+            <input type="radio" name="sex" value="男" title="男">
+            <input type="radio" name="sex" value="女" title="女" checked>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">电话</label>
+        <div class="layui-input-inline">
+            <input type="text" name="phone" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">症状</label>
+        <div class="layui-input-inline">
+            <input type="text" name="symptom" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">药方</label>
+        <div class="layui-input-inline">
+            <input type="text" name="medicine" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">日期</label>
+        <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+            <input type="text" name="time" class="layui-input" id="test1" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formSure">确定</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -149,15 +185,38 @@
 <script src="../static/lib/js/jquery-1.11.2.min.js"></script>
 
 <script>
-    layui.use('table', function(){
+    var personData='';
+    layui.use(['table','laydate','form'], function(){
         var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        laydate.render({
+            elem: '#test1' //指定元素
+        });
 
+        table.render({
+            elem: '#preInfoTable'
+            ,height: 315
+            ,url: 'http://localhost:8081/findall' //数据接口
+            ,page: false //开启分页
+            ,cols: [[ //表头
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID', width:80, sort: true}
+                ,{field: 'name', title: '姓名', width:80}
+                ,{field: 'sex', title: '性别', width:80, sort: true}
+                ,{field: 'telephone', title: '电话', width:120}
+                ,{field: 'symptom', title: '症状', width: 200,align:'center'}
+                ,{field: 'medicine', title: '药方', width: 200,align:'center'}
+                ,{field: 'date', title: '日期', width: 150, sort: true,align:'center'}
+                ,{title: '操作', width: 200, toolbar: '#barDemo',align:'center'}
+            ]]
+        });
         //监听表格复选框选择
-        table.on('checkbox(demo)', function(obj){
+        table.on('checkbox(preInfoTable)', function(obj){
             console.log(obj)
         });
         //监听工具条
-        table.on('tool(demo)', function(obj){
+        table.on('tool(preInfoTable)', function(obj){
             var data = obj.data;
             if(obj.event === 'detail'){
                 layer.msg('ID：'+ data.id + ' 的查看操作');
@@ -174,6 +233,32 @@
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
+        $("#addIllDetail").on('click',function () {
+            layer.open({
+                type:1,
+                content:$("#IllDetail"),
+                title:"添加病人病情和药方",
+                area:['350px','550px'],
+                success:function (index,layero) {
+
+                    var length=$(layero).find("input").length;
+                    //监听提交
+                    form.on('submit(formSure)', function(data){
+                        personData=data.field;
+                        $.ajax({
+                            url:'http://localhost:8081/save',
+                            type:'POST',
+                            data:JSON.stringify(data.field),
+                            success:function (data) {
+                                alert("成功");
+                            }
+                        })
+                        return false;
+                    });
+
+                }
+            });
+        });
     });
     function renderForm(){
         layui.use('form', function(){
@@ -181,6 +266,7 @@
             form.render();
         });
     }
+
     var html='<div class="layui-inline">'+
             '<div class="layui-input-inline">'+
             '<select name="modules" lay-verify="required" lay-search="">'+
@@ -212,10 +298,10 @@
                 //获取要添加的option的索引
                 var sIndex=$("#zcySelect")[0].options.length-1;
                 if(ivalue==null||ivalue==''){
-                    layer.msg("请输入产品类别")
+                    layer.msg("请输入名称")
                 }
                 else{
-                    layer.msg("输入的产品类别是："+ivalue);
+                    layer.msg("输入的病名是："+ivalue);
                     //为select添加option
                     $("#zcySelect").append("<option value="+sIndex+">"+ivalue+"</option>");
                     renderForm();//表单重新渲染，要不然添加完显示不出来新的option
