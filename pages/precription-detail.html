@@ -9,7 +9,7 @@
     <title>Title</title>
     <link rel="stylesheet" href="../static/lib/layui/css/layui.css">
     <style>
-        .inner{width:1280px;margin: 100px auto;}
+        .inner{width:1280px;margin: 0 auto;}
         #nav-menu{text-align: center;float: left;}
         #nav-menu .layui-nav-tree{width: 100px;}
         .right-table{float: left;width: 1170px;margin-left: 10px;position: relative;}
@@ -129,7 +129,7 @@
         <input type="text" name="text" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
     </div>
 </div>
-<form id="IllDetail" class="layui-form" hidden="hidden" action="">
+<form class="layui-form"  id="IllDetail" hidden="hidden">
     <div class="layui-form-item">
         <label class="layui-form-label">姓名</label>
         <div class="layui-input-inline">
@@ -161,12 +161,6 @@
             <input type="text" name="medicine" required lay-verify="medicine" placeholder="" autocomplete="off" class="layui-input">
         </div>
     </div>
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="formSure" id="formSure">确定</button>
-            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-        </div>
-    </div>
 </form>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
@@ -181,19 +175,25 @@
 <script src="../static/lib/js/jquery-1.11.2.min.js"></script>
 
 <script>
-    var personData='';
+    function renderForm(){
+        layui.use('form', function(){
+            var form = layui.form;
+            form.render();
+        });
+    }
     layui.use(['table','form'], function(){
         var table = layui.table;
         var form = layui.form;
 
         table.render({
             elem: '#preInfoTable'
-            ,height: 315
+            ,height: 730
             ,url: 'http://localhost:8083/findall' //数据接口
-            ,page: false //开启分页
+            ,page: true //开启分页
+            ,id:'reloadTable'
             ,cols: [[ //表头
-                {type: 'checkbox', fixed: 'left'}
-                ,{title: '序号',templet: '#indexTpl'}
+                {type: 'checkbox'}
+                ,{title: '序号',templet: '#indexTpl', width:50}
                 ,{field: 'name', title: '姓名', width:80,edit: 'text'}
                 ,{field: 'sex', title: '性别', width:80, sort: true}
                 ,{field: 'telephone', title: '电话', width:120,edit: 'text'}
@@ -216,15 +216,50 @@
         //监听工具条
         table.on('tool(preInfoTable)', function(obj){
             var data = obj.data;
-            if(obj.event === 'detail'){
-                layer.msg('ID：'+ data.id + ' 的查看操作');
-            } else if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
-                    obj.del();
-                    layer.close(index);
+           if(obj.event === 'del'){
+                layer.confirm('真的删除么', function(index){
+                    $.ajax({
+                        url:'http://localhost:8083/delete/'+data.id,
+                        type:'GET',
+                        success:function (data) {
+                            if(data.code==200){
+                                layer.close(index);
+                                table.reload('reloadTable', {});
+                            }
+                        },
+                        error:function () {
+                            layer.msg("删除失败");
+                        }
+                    });
+
                 });
             } else if(obj.event === 'edit'){
-                layer.alert('编辑行：<br>'+ JSON.stringify(data))
+               layer.open({
+                   type:1,
+                   content:$("#IllDetail"),
+                   title:"修改病人病情和药方",
+                   btn:['确定','取消'],
+                   area:['350px','550px'],
+                   yes:function (index,layero) {
+                       var dataStr = $("#IllDetail").serialize();
+                       var params = decodeURIComponent(dataStr, true);
+                       $.ajax({
+                           url:'http://localhost:8083/save',
+                           type:'POST',
+                           contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                           data:params,
+                           success:function (data) {
+                               layer.close(index);
+                               //window.location.href='/precription/pages/history.html';
+                               form.render();
+                               table.reload('reloadTable', {});
+                           },
+                           error:function () {
+                               layer.msg("输入有误，请重新输入！")
+                           }
+                       });
+                   }
+               });
             }
         });
         $('.demoTable .layui-btn').on('click', function(){
@@ -254,38 +289,30 @@
                 type:1,
                 content:$("#IllDetail"),
                 title:"添加病人病情和药方",
+                btn:['确定','取消'],
                 area:['350px','550px'],
-                success:function (index,layero) {
-                    form.on('submit(formSure)', function(data) {
-                        var dataStr = $("#IllDetail").serialize();
-                        var params = decodeURIComponent(dataStr, true);
-                        $.ajax({
-                            url:'http://localhost:8083/save',
-                            type:'POST',
-                            dataType:'json',
-                            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-                            data:params,
-                            success:function (data) {
-
-                                layer.close(index);
-                                form.render(); // 更新全部
-                            },
-                            error:function () {
-                                layer.msg("输入有误，请重新输入！")
-                            }
-                        });
+                yes:function (index,layero) {
+                    var dataStr = $("#IllDetail").serialize();
+                    var params = decodeURIComponent(dataStr, true);
+                    $.ajax({
+                        url:'http://localhost:8083/save',
+                        type:'POST',
+                        contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                        data:params,
+                        success:function (data) {
+                            layer.close(index);
+                            //window.location.href='/precription/pages/history.html';
+                            form.render();
+                            table.reload('reloadTable', {});
+                        },
+                        error:function () {
+                            layer.msg("输入有误，请重新输入！")
+                        }
                     });
-
                 }
             });
         });
     });
-    function renderForm(){
-        layui.use('form', function(){
-            var form = layui.form;
-            form.render();
-        });
-    }
 
     var html='<div class="layui-inline">'+
             '<div class="layui-input-inline">'+
