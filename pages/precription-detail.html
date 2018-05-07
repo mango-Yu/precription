@@ -197,7 +197,7 @@
         table.render({
             elem: '#preInfoTable'
             ,height: 315
-            ,url: 'http://localhost:8081/findall' //数据接口
+            ,url: 'http://localhost:8083/findall' //数据接口
             ,page: false //开启分页
             ,cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
@@ -246,7 +246,7 @@
                     form.on('submit(formSure)', function(data){
                         personData=data.field;
                         $.ajax({
-                            url:'http://localhost:8081/save',
+                            url:'http://localhost:8083/save',
                             type:'POST',
                             data:JSON.stringify(data.field),
                             success:function (data) {

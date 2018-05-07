@@ -7,32 +7,62 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../static/lib/layui/css/layui.css">
-    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
     <style>
-        .inner{width:1280px;margin: 100px auto;}
-        .layui-table-view{margin-top: 30px;width: 1280px !important;}
-        .layui-table-cell {height: auto;line-height: 28px;padding: 0 15px;position: relative;overflow: hidden;text-overflow: ellipsis;white-space: normal; box-sizing: border-box;}
+        .inner {
+            width: 1280px;
+            margin: 100px auto;
+        }
+
+        .layui-table-view {
+            margin-top: 30px;
+            width: 1280px !important;
+        }
+
+        .layui-table-cell {
+            height: auto;
+            line-height: 28px;
+            padding: 0 15px;
+            position: relative;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
 <div class="wrap">
     <div class="inner">
         <h1>病情历史记录</h1>
-        <table class="layui-table" id="preInfoTable" lay-data="{width: 892, height:332,url:'http://localhost:8081/findall', page:true, id:'idTest'}" lay-filter="demo">
-            <thead>
-            <tr>
-                <th lay-data="{type:'checkbox'}"></th>
-                <th lay-data="{field:'id', width:80, sort: true}">ID</th>
-                <th lay-data="{field:'name', width:80}">姓名</th>
-                <th lay-data="{field:'sex', width:80, sort: true}">性别</th>
-                <th lay-data="{field:'telephone', width:132}">电话</th>
-                <th lay-data="{field:'symptom', width:250}">症状</th>
-                <th lay-data="{field:'medicine', width:250}">药方</th>
-                <th lay-data="{field:'date', width:150, sort: true}">日期</th>
-                <th lay-data="{ width:200, align:'center', toolbar: '#barDemo'}"></th>
-            </tr>
-            </thead>
-        </table>
+        <form action="" class="layui-form">
+            <div class="layui-row">
+                <div class="layui-row ">
+                    <div class="layui-col-md3">
+                        <label class="layui-form-label">电话</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verify="required"  id="telephone" placeholder="请输入电话" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md3">
+                        <label class="layui-form-label">症状</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verify="required" id="symptom" placeholder="请输入症状"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md3">
+                        <label class="layui-form-label">日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="time" lay-verify="required" placeholder="年-月-日"
+                                   class="layui-input input-date" readonly>
+                        </div>
+                    </div>
+                    <button class="layui-btn" data-type="reload" id="search">搜索</button>
+                </div>
+            </div>
+        </form>
+        <table class="layui-table" id="preInfoTable" lay-filter="demo"></table>
     </div>
 </div>
 <script type="text/html" id="barDemo">
@@ -45,22 +75,71 @@
 <script src="../static/lib/js/jquery-1.11.2.min.js"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
-    layui.use('table', function(){
+    layui.use(['table', 'laydate', 'form'], function () {
         var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        laydate.render({
+            elem: '#date' //指定元素
+        });
         //监听表格复选框选择
-        table.on('checkbox(demo)', function(obj){
+        table.on('checkbox(demo)', function (obj) {
             console.log(obj)
         });
+        table.render({
+            elem:'#preInfoTable',
+            url:'http://localhost:8083/findpage',
+            cols:[[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID', width:80, sort: true}
+                ,{field: 'name', title: '姓名', width:80}
+                ,{field: 'sex', title: '性别', width:80, sort: true}
+                ,{field: 'telephone', title: '电话', width:120}
+                ,{field: 'symptom', title: '症状', width: 250,align:'center'}
+                ,{field: 'medicine', title: '药方', width: 250,align:'center'}
+                ,{field: 'date', title: '日期', width: 160, sort: true,align:'center'}
+                ,{title: '操作', width: 200, toolbar: '#barDemo',align:'center'}
+                ]]
+            ,page: true
+            ,response: {
+                statusCode: 200 //成功的状态码，默认：0
+                ,msgName: 'msg' //状态信息的字段名称，默认：msg
+                ,countName: 'count' //数据总数的字段名称，默认：count
+                ,dataName: 'data' //数据列表的字段名称，默认：data
+            }
+            ,id: 'testReload'
+            ,height:'332'
+            ,width:'892'
+        });
         //监听工具条
-        table.on('tool(demo)', function(obj){
+        table.on('tool(demo)', function (obj) {
             var data = obj.data;
-            if(obj.event === 'detail'){
-                layer.msg('ID：'+ data.id + ' 的查看操作');
+            if (obj.event === 'detail') {
+                layer.msg('ID：' + data.id + ' 的查看操作');
             }
         });
 
+        var $ = layui.$, active = {
+            reload: function () {
+                var symptom = $('#symptom');
+                var telephone = $('#telephone');
+                var date = $('#time');
 
-        $('.demoTable .layui-btn').on('click', function(){
+                //执行重载
+                table.reload('testReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:'http://localhost:8083/findpage'
+                    , where: {
+                            symptom: symptom.val(),
+                            telephone: telephone.val()
+                    }
+                });
+            }
+        };
+
+        $('.layui-form .layui-btn').on('click', function () {
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
