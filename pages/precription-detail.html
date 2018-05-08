@@ -224,7 +224,6 @@
     </div>
 </form>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
@@ -276,33 +275,7 @@
         }
         return rs;
     }
-    /**
-     * 获取cookie
-     * @param name
-     * @returns {*}
-     */
-    function getCookie(name) {
-        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-        if (arr = document.cookie.match(reg))
-            return arr[2];
-        else {
-            return null;
-        }
-    }
-    /**
-     * 删除Cookie
-     * @param name
-     * @param domainArr
-     */
-    function delCookie(name, domainArr) {
-        var exp = (new Date().getTime() - 1).toGMTString();
-        var cookieValue = getCookie(name);
-        if (cookieValue != null) {
-            for (var i = 0; i < domainArr.length; i++) {
-                document.cookie = "SESSION_ID=" + cookieValue + ";domain=" + domainArr[i] + ";expires=" + exp + ";path=/";
-            }
-        }
-    }
+
     layui.use(['table', 'form'], function () {
         var table = layui.table;
         var form = layui.form;
@@ -317,7 +290,7 @@
                 pageName: 'pageNmuber' //页码的参数名称，默认：page
                 , limitName: 'pageSize' //每页数据量的参数名，默认：limit
             },where: {
-               id:getCookie("id")
+               id: $.cookie('ID')
             }
             , cols: [[ //表头
                 {type: 'checkbox'}
@@ -347,7 +320,10 @@
             var data = obj.data;
             if (obj.event === 'del') {//删除
                 layer.confirm('真的删除么', function (index) {
-                    $.ajax({
+                    $.cookie('ID', '', { expires: -1 ,path: "/"});
+                    table.reload('reloadTable', {});
+                    layer.close(index);
+                    /*$.ajax({
                         url: 'http://localhost:8083/delete/' + data.id,
                         type: 'GET',
                         success: function (data) {
@@ -359,7 +335,7 @@
                         error: function () {
                             layer.msg("删除失败");
                         }
-                    });
+                    });*/
 
                 });
             } else if (obj.event === 'edit') {//编辑
@@ -381,7 +357,7 @@
                 $('input[name=telephone]').val(telephone);
                 $('input[name=symptom]').val(symptom);
                 $('textarea[name=medicine]').val(medicine);
-
+                form.render();
                 layer.open({
                     type: 1,
                     content: $("#IllDetail"),
@@ -397,14 +373,19 @@
                         var dataStr = $("#IllDetail").serialize();
                         var params = decodeURIComponent(dataStr, true);
                         $.ajax({
-                            url: 'http://localhost:8083/update/?id='+ data.id,
+                            url: 'http://localhost:8083/update',
                             type: 'POST',
                             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-                            data: params,
-                            success: function (data) {
+                            data: 'id='+data.id+"&"+params,
+                            success: function (res) {
                                 form.render();
                                 layer.close(index);
-                                table.reload('reloadTable', {});
+                                table.reload('reloadTable', {
+                                   where: {
+                                        id: data.id
+                                    }
+                                });
+
                             },
                             error: function () {
                                 layer.msg("输入有误，请重新输入！")
@@ -450,11 +431,15 @@
                         contentType: "application/x-www-form-urlencoded;charset=UTF-8",
                         data: params,
                         success: function (data) {
-
                             //window.location.href='/precription/pages/history.html';
                             form.render();
                             layer.close(index);
-                            table.reload('reloadTable', {});
+                            table.reload('reloadTable', {
+                                where: {
+                                    id:data.data.id
+                                }
+                            });
+
                         },
                         error: function () {
                             layer.msg("输入有误，请重新输入！")
