@@ -116,7 +116,7 @@
             var data = obj.data;
             if (obj.event === 'detail') {
                // layer.msg('ID：' + data.id + ' 的查看操作');
-                $.cookie('id', data.id, {expires: 0.1, path: '/', domain: 'localhost'});
+                $.cookie('ID', data.id,{ path: "/"}); // 存储 cookie
                 window.location.href='/precription/pages/precription-detail.html';
             }
         });
