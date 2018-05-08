@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>layui</title>
+    <title>历史记录</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -41,13 +41,13 @@
                     <div class="layui-col-md3">
                         <label class="layui-form-label">电话</label>
                         <div class="layui-input-block">
-                            <input type="text" lay-verify="required"  id="telephone" placeholder="请输入电话" class="layui-input">
+                            <input type="text" id="telephone" placeholder="请输入电话" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-col-md3">
                         <label class="layui-form-label">症状</label>
                         <div class="layui-input-block">
-                            <input type="text" lay-verify="required" id="symptom" placeholder="请输入症状"
+                            <input type="text" id="symptom" placeholder="请输入症状"
                                    class="layui-input">
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                                    class="layui-input input-date" readonly>
                         </div>
                     </div>
-                    <button class="layui-btn" data-type="reload" id="search">搜索</button>
+                    <button class="layui-btn" data-type="reload" id="search" type="button">搜索</button>
                 </div>
             </div>
         </form>
@@ -82,7 +82,7 @@
         var laydate = layui.laydate;
         var form = layui.form;
         laydate.render({
-            elem: '#date' //指定元素
+            elem: '#time' //指定元素
         });
         //监听表格复选框选择
         table.on('checkbox(demo)', function (obj) {
@@ -90,7 +90,7 @@
         });
         table.render({
             elem:'#preInfoTable',
-            url:'http://localhost:8083/findall',
+            url:'http://localhost:8083/findpage',
             cols:[[
                 {type: 'checkbox', fixed: 'left'}
                 ,{title: '序号',templet: '#indexTpl'}
@@ -102,9 +102,11 @@
                 ,{field: 'date', title: '日期', width: 162, sort: true,align:'center'}
                 ,{title: '操作', width: 200, toolbar: '#barDemo',align:'center'}
                 ]]
+            ,request: {
+                pageName: 'pageNmuber' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
             ,page: true //是否显示分页
-            ,limits: [4, 8, 12,16,20]
-            ,limit: 4 //每页默认显示的数量
             ,id: 'testReload'
             ,height:'332'
             ,width:'892'
@@ -128,10 +130,13 @@
                     page: {
                         curr: 1 //重新从第 1 页开始
                     }
-                    ,url:'http://localhost:8083/findpall'
-                    , where: {
-                            symptom: symptom.val(),
-                            telephone: telephone.val()
+                    ,where: {
+                        symptom: symptom.val(),
+                        telephone: telephone.val()
+                    }
+                    ,request: {
+                        pageName: 'pageNmuber' //页码的参数名称，默认：page
+                        ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
                     }
                 });
             }
