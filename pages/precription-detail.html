@@ -275,7 +275,10 @@
         }
         return rs;
     }
-
+    var id='0000';
+    if($.cookie('ID') ){
+        id=$.cookie('ID');
+    }
     layui.use(['table', 'form'], function () {
         var table = layui.table;
         var form = layui.form;
@@ -283,15 +286,9 @@
         table.render({
             elem: '#preInfoTable'
             , height: 480
-            , url: 'http://localhost:8083/findpage' //数据接口
-            , page: true //开启分页
+            , url: 'http://localhost:8083/findbyid/'+id//数据接口
+            , page: false //开启分页
             , id: 'reloadTable'
-            , request: {
-                pageName: 'pageNmuber' //页码的参数名称，默认：page
-                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
-            },where: {
-               id: $.cookie('ID')
-            }
             , cols: [[ //表头
                 {type: 'checkbox'}
                 , {title: '序号', templet: '#indexTpl', width: 50}
@@ -321,8 +318,8 @@
             if (obj.event === 'del') {//删除
                 layer.confirm('真的删除么', function (index) {
                     $.cookie('ID', '', { expires: -1 ,path: "/"});
-                    table.reload('reloadTable', {});
-                    layer.close(index);
+                    id='0000';
+                    window.location.reload();
                     /*$.ajax({
                         url: 'http://localhost:8083/delete/' + data.id,
                         type: 'GET',
@@ -372,6 +369,7 @@
                         }
                         var dataStr = $("#IllDetail").serialize();
                         var params = decodeURIComponent(dataStr, true);
+                        console.log(data.id);
                         $.ajax({
                             url: 'http://localhost:8083/update',
                             type: 'POST',
