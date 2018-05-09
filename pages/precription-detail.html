@@ -286,8 +286,9 @@
         table.render({
             elem: '#preInfoTable'
             , height: 480
-            , url: 'http://localhost:8083/findbyid/'+id//数据接口
-            , page: false //开启分页
+            , url: 'http://localhost:8081/findbyid/'+id//数据接口
+          /*  , method:'POST'*/
+            , page: true //开启分页
             , id: 'reloadTable'
             , cols: [[ //表头
                 {type: 'checkbox'}
@@ -321,7 +322,7 @@
                     id='0000';
                     window.location.reload();
                     /*$.ajax({
-                        url: 'http://localhost:8083/delete/' + data.id,
+                        url: 'http://localhost:8081/delete/' + data.id,
                         type: 'GET',
                         success: function (data) {
                             if (data.code == 200) {
@@ -371,7 +372,7 @@
                         var params = decodeURIComponent(dataStr, true);
                         console.log(data.id);
                         $.ajax({
-                            url: 'http://localhost:8083/update',
+                            url: 'http://localhost:8081/update',
                             type: 'POST',
                             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
                             data: 'id='+data.id+"&"+params,
@@ -424,7 +425,7 @@
                     var params = decodeURIComponent(dataStr, true);
 
                     $.ajax({
-                        url: 'http://localhost:8083/save',
+                        url: 'http://localhost:8081/save',
                         type: 'POST',
                         contentType: "application/x-www-form-urlencoded;charset=UTF-8",
                         data: params,
