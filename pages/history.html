@@ -10,12 +10,12 @@
     <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
     <style>
         .inner {
-            width: 1280px;
+            width: 1360px;
             margin: 100px auto;
         }
         .layui-table-view {
             margin-top: 30px;
-            width: 1280px !important;
+            width: 1360px !important;
         }
         .layui-table-cell {
             height: auto;
@@ -27,6 +27,7 @@
             white-space: normal;
             box-sizing: border-box;
         }
+        #search{margin-left: 20px;}
     </style>
 </head>
 <body>
@@ -50,9 +51,16 @@
                         </div>
                     </div>
                     <div class="layui-col-md3">
-                        <label class="layui-form-label">日期</label>
+                        <label class="layui-form-label">开始日期</label>
                         <div class="layui-input-block">
-                            <input type="text" id="time" lay-verify="required" placeholder="年-月-日"
+                            <input type="text" id="beginTime" lay-verify="required" placeholder="年-月-日"
+                                   class="layui-input input-date" readonly>
+                        </div>
+                    </div>
+                    <div class="layui-col-md3">
+                        <label class="layui-form-label">结束日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="endTime" lay-verify="required" placeholder="年-月-日"
                                    class="layui-input input-date" readonly>
                         </div>
                     </div>
@@ -81,7 +89,10 @@
         var laydate = layui.laydate;
         var form = layui.form;
         laydate.render({
-            elem: '#time' //指定元素
+            elem: '#beginTime' //指定元素
+        });
+        laydate.render({
+            elem: '#endTime' //指定元素
         });
         //监听表格复选框选择
         table.on('checkbox(demo)', function (obj) {
@@ -108,7 +119,7 @@
             }
             ,page: true //是否显示分页
             ,id: 'testReload'
-            ,height:'332'
+            ,height:'500'
             ,width:'892'
         });
         //监听工具条
@@ -126,7 +137,8 @@
             reload: function () {
                 var symptom = $('#symptom');
                 var telephone = $('#telephone');
-                var date = $('#time');
+                var beginTime = $('#beginTime');
+                var endTime = $('#endTime');
 
                 //执行重载
                 table.reload('testReload', {
@@ -135,7 +147,9 @@
                     }
                     ,where: {
                         symptom: symptom.val(),
-                        telephone: telephone.val()
+                        telephone: telephone.val(),
+                        beginDt: beginTime.val(),
+                        endDt: endTime.val()
                     }
                     ,request: {
                         pageName: 'pageNmuber' //页码的参数名称，默认：page
