@@ -275,6 +275,35 @@
         }
         return rs;
     }
+    function initForm(form ,_this) {
+        var name = $(_this).closest('tr').find('.laytable-cell-2-name').text();
+        var sex = $(_this).closest('tr').find('.laytable-cell-2-sex').text();
+        var telephone = $(_this).closest('tr').find('.laytable-cell-2-telephone').text();
+        var symptom = $(_this).closest('tr').find('.laytable-cell-2-symptom').text();
+        var medicine = $(_this).closest('tr').find('.laytable-cell-2-medicine').text();
+        if (sex == "男") {
+            $('input:radio[name=sex]')[0].checked = true;
+            $('input:radio[name=sex]')[1].checked = false;
+
+        } else if (sex == "女") {
+            $('input:radio[name=sex]')[0].checked = false;
+            $('input:radio[name=sex]')[1].checked = true;
+
+        }
+        $('input[name=name]').val(name);
+        $('input[name=telephone]').val(telephone);
+        $('input[name=symptom]').val(symptom);
+        $('textarea[name=medicine]').val(medicine);
+       // form.render();
+        form.render('radio');
+    }
+    function clearForm() {
+        $("#IllDetail").find('input[name=name]').val('');
+        $("#IllDetail").find('input[name=telephone]').val('');
+        $("#IllDetail").find('input[name=symptom]').val('');
+        $("#IllDetail").find("textarea").val('');
+
+    }
     var id='0000';
     if($.cookie('ID') ){
         id=$.cookie('ID');
@@ -285,19 +314,22 @@
         /*初始表格渲染*/
         table.render({
             elem: '#preInfoTable'
-            , height: 480
+            , height: 300
             , url: 'http://localhost:8081/findbyid/'+id//数据接口
-          /*  , method:'POST'*/
-            , page: true //开启分页
+            , method:'POST'
+            /*,where:{
+                id:id
+            }*/
+            , page: false //开启分页
             , id: 'reloadTable'
             , cols: [[ //表头
                 {type: 'checkbox'}
                 , {title: '序号', templet: '#indexTpl', width: 50}
-                , {field: 'name', title: '姓名', width: 80, edit: 'text'}
+                , {field: 'name', title: '姓名', width: 90, edit: 'text'}
                 , {field: 'sex', title: '性别', width: 80, sort: true}
                 , {field: 'telephone', title: '电话', width: 120, edit: 'text'}
-                , {field: 'symptom', title: '症状', width: 200, align: 'center', edit: 'text'}
-                , {field: 'medicine', title: '药方', width: 200, align: 'center', edit: 'text'}
+                , {field: 'symptom', title: '症状', width: 210, align: 'center', edit: 'text'}
+                , {field: 'medicine', title: '药方', width: 210, align: 'center', edit: 'text'}
                 , {field: 'date', title: '日期', width: 150, sort: true, align: 'center'}
                 , {title: '操作', width: 200, toolbar: '#barDemo', align: 'center'}
             ]]
@@ -321,41 +353,10 @@
                     $.cookie('ID', '', { expires: -1 ,path: "/"});
                     id='0000';
                     window.location.reload();
-                    /*$.ajax({
-                        url: 'http://localhost:8081/delete/' + data.id,
-                        type: 'GET',
-                        success: function (data) {
-                            if (data.code == 200) {
-                                layer.close(index);
-                                table.reload('reloadTable', {});
-                            }
-                        },
-                        error: function () {
-                            layer.msg("删除失败");
-                        }
-                    });*/
-
                 });
             } else if (obj.event === 'edit') {//编辑
-                var name = $(this).closest('tr').find('.laytable-cell-2-name').text();
-                var sex = $(this).closest('tr').find('.laytable-cell-2-sex').text();
-                var telephone = $(this).closest('tr').find('.laytable-cell-2-telephone').text();
-                var symptom = $(this).closest('tr').find('.laytable-cell-2-symptom').text();
-                var medicine = $(this).closest('tr').find('.laytable-cell-2-medicine').text();
-                if (sex == "男") {
-                    $('input:radio[name=sex]')[0].checked = true;
-                    $('input:radio[name=sex]')[1].checked = false;
-                    form.render('radio');
-                } else if (sex == "女") {
-                    $('input:radio[name=sex]')[0].checked = false;
-                    $('input:radio[name=sex]')[1].checked = true;
-                    form.render('radio');
-                }
-                $('input[name=name]').val(name);
-                $('input[name=telephone]').val(telephone);
-                $('input[name=symptom]').val(symptom);
-                $('textarea[name=medicine]').val(medicine);
-                form.render();
+                var _this=this;
+                initForm(form ,_this);
                 layer.open({
                     type: 1,
                     content: $("#IllDetail"),
@@ -370,45 +371,31 @@
                         }
                         var dataStr = $("#IllDetail").serialize();
                         var params = decodeURIComponent(dataStr, true);
-                        console.log(data.id);
+                        console.log(params);
                         $.ajax({
                             url: 'http://localhost:8081/update',
                             type: 'POST',
                             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
                             data: 'id='+data.id+"&"+params,
                             success: function (res) {
-                                form.render();
+                                $.cookie('ID', data.id,{ path: "/"}); // 存储 cookie
                                 layer.close(index);
-                                table.reload('reloadTable', {
-                                   where: {
-                                        id: data.id
-                                    }
-                                });
-
+                                window.location.reload();
                             },
                             error: function () {
                                 layer.msg("输入有误，请重新输入！")
                             }
                         });
                     },
-                    btn2: function (index, layero) {
-                        form.render();
-                        $(layero).find("input").val('');
-                        $(layero).find("textarea").val('');
-                    },
                     success: function (layero, index) {
                         $(':focus').blur();
-                    },
-                    cancel: function (index, layero) {
-                        form.render();
-                        $(layero).find("input").val('');
-                        $(layero).find("textarea").val('');
                     }
                 });
             }
         });
         /*添加病情和药方详情*/
         $("#addIllDetail").on('click', function () {
+            clearForm();
             layer.open({
                 type: 1,
                 content: $("#IllDetail"),
@@ -430,34 +417,20 @@
                         contentType: "application/x-www-form-urlencoded;charset=UTF-8",
                         data: params,
                         success: function (data) {
-                            //window.location.href='/precription/pages/history.html';
-                            form.render();
+                            $.cookie('ID', data.data.id,{ path: "/"}); // 存储 cookie
                             layer.close(index);
-                            table.reload('reloadTable', {
-                                where: {
-                                    id:data.data.id
-                                }
-                            });
-
+                            window.location.reload();
                         },
                         error: function () {
                             layer.msg("输入有误，请重新输入！")
                         }
                     });
                 },
-                btn2: function (index, layero) {
-                    form.render();
-                    $(layero).find("input").val('');
-                    $(layero).find("textarea").val('');
-                },
+
                 success: function (layero, index) {
                     $(':focus').blur();
-                },
-                cancel: function (index, layero) {
-                    form.render();
-                    $(layero).find("input").val('');
-                    $(layero).find("textarea").val('');
                 }
+
 
             });
         });
