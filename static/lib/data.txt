@@ -1,0 +1,250 @@
+[
+ {
+      "title": "hand",
+      "detail": {
+        "symptom": [
+          "hand1",
+          "hand2",
+          "hand3",
+          "hand4",
+          "hand5",
+          "hand6",
+          "hand7"
+        ],
+        "medicine": [
+          "yaod1",
+          "yaod2",
+          "yaod3",
+          "yaod4",
+          "yaod5",
+          "yaod6",
+          "yaod7",
+          "yaod8",
+          "yaod9",
+          "yaod10",
+          "yaod11",
+          "yaod12",
+          "yaod13",
+          "yaod14",
+          "yaod15",
+          "yaod16",
+          "yaod17",
+          "yaod18",
+          "yaod19",
+          "yaod20"
+        ]
+      }
+    },
+    {
+      "title": "body",
+      "detail": {
+        "symptom": [
+          "body1",
+          "body2",
+          "body3",
+          "body4",
+          "body5",
+          "body6",
+          "body7"
+        ],
+        "medicine": [
+          "yaob1",
+          "yaob2",
+          "yaob3",
+          "yaob4",
+          "yaob5",
+          "yaob6",
+          "yaob7",
+          "yaob8",
+          "yaob9",
+          "yaob10",
+          "yaob11",
+          "yaob12",
+          "yaob13",
+          "yaob14",
+          "yaob15",
+          "yaob16",
+          "yaob17",
+          "yaob18",
+          "yaob19",
+          "yaob20"
+        ]
+      }
+    },
+    {
+      "title": "foot",
+      "detail": {
+        "symptom": [
+          "foot1",
+          "foot2",
+          "foot3",
+          "foot4",
+          "foot5",
+          "foot6",
+          "foot7"
+        ],
+        "medicine": [
+          "yaof1",
+          "yaof2",
+          "yaof3",
+          "yaof4",
+          "yaof5",
+          "yaof6",
+          "yaof7",
+          "yaof8",
+          "yaof9",
+          "yaof10",
+          "yaof11",
+          "yaof12",
+          "yaof13",
+          "yaof14",
+          "yaof15",
+          "yaof16",
+          "yaof17",
+          "yaof18",
+          "yaof19",
+          "yaof20"
+        ]
+      }
+    },
+    {
+      "title": "leg",
+      "detail": {
+        "symptom": [
+          "leg1",
+          "leg2",
+          "leg3",
+          "leg4",
+          "leg5",
+          "leg6",
+          "leg7"
+        ],
+        "medicine": [
+          "yaol1",
+          "yaol2",
+          "yaol3",
+          "yaol4",
+          "yaol5",
+          "yaol6",
+          "yaol7",
+          "yaol8",
+          "yaol9",
+          "yaol10",
+          "yaol11",
+          "yaol12",
+          "yaol13",
+          "yaol14",
+          "yaol15",
+          "yaol16",
+          "yaol17",
+          "yaol18",
+          "yaol19",
+          "yaol20"
+        ]
+      }
+    }
+]
+
+
+    {
+      "code": 0,
+      "msg": "成功",
+      "count": 5,
+      "data": [
+        {"title":"allMedicine",
+          "medicine": [
+            "yaoh1",
+            "yaoh2",
+            "yaoh3",
+            "yaoh4",
+            "yaoh5",
+            "yaoh6",
+            "yaoh7",
+            "yaoh8",
+            "yaoh9",
+            "yaoh10",
+            "yaoh11",
+            "yaoh12",
+            "yaoh13",
+            "yaoh14",
+            "yaoh15",
+            "yaoh16",
+            "yaoh17",
+            "yaoh18",
+            "yaoh19",
+            "yaoh20"
+          ]
+        },
+        {
+          "title": "head",
+          "detail": {
+            "symptom": [
+              {"head1":["yaoh1","yaoh2","yaoh3","yaoh4"]},
+              {"head2":["yaoh12","yaoh22","yaoh32","yaoh42"]},
+              {"head3":["yaoh13","yaoh23","yaoh33","yaoh43"]},
+              {"head4":["yaoh14","yaoh24","yaoh34","yaoh44"]},
+              {"head5":["yaoh15","yaoh25","yaoh35","yaoh45"]},
+              {"head6":["yaoh16","yaoh26","yaoh36","yaoh46"]},
+              {"head7":["yaoh17","yaoh27","yaoh37","yaoh47"]}
+            ]
+          }
+        },
+        {
+          "title": "hand",
+          "detail": {
+            "symptom": [
+              {"hand1":["yaod1","yaod2","yaod3","yaod4"]},
+              {"hand2":["yaod12","yaod22","yaod32","yaod42"]},
+              {"hand3":["yaod13","yaod23","yaod33","yaod43"]},
+              {"hand4":["yaod14","yaod24","yaod34","yaod44"]},
+              {"hand5":["yaod15","yaod25","yaod35","yaod45"]},
+              {"hand6":["yaod16","yaod26","yaod36","yaod46"]},
+              {"hand7":["yaod17","yaod27","yaod37","yaod47"]}
+            ]
+          }
+        },
+        {
+          "title": "body",
+          "detail": {
+            "symptom": [
+              {"body1":["yaob1","yaob2","yaob3","yaob4"]},
+              {"body2":["yaob12","yaob22","yaob32","yaob42"]},
+              {"body3":["yaob13","yaob23","yaob33","yaob43"]},
+              {"body4":["yaob14","yaob24","yaob34","yaob44"]},
+              {"body5":["yaob15","yaob25","yaob35","yaob45"]},
+              {"body6":["yaob16","yaob26","yaob36","yaob46"]},
+              {"body7":["yaob17","yaob27","yaob37","yaob47"]}
+            ]
+          }
+        },
+        {
+          "title": "foot",
+          "detail": {
+            "symptom": [
+              {"foot1":["yaof1","yaof2","yaof3","yaof4"]},
+              {"foot2":["yaof12","yaof22","yaof32","yaof42"]},
+              {"foot3":["yaof13","yaof23","yaof33","yaof43"]},
+              {"foot4":["yaof14","yaof24","yaof34","yaof44"]},
+              {"foot5":["yaof15","yaof25","yaof35","yaof45"]},
+              {"foot6":["yaof16","yaof26","yaof36","yaof46"]},
+              {"foot7":["yaof17","yaof27","yaof37","yaof47"]}
+            ]
+          }
+        },
+        {
+          "title": "leg",
+          "detail": {
+            "symptom": [
+              {"leg1":["yaol1","yaol2","yaol3","yaol4"]},
+              {"leg2":["yaol12","yaol22","yaol32","yaol42"]},
+              {"leg3":["yaol13","yaol23","yaol33","yaol43"]},
+              {"leg4":["yaol14","yaol24","yaol34","yaol44"]},
+              {"leg5":["yaol15","yaol25","yaol35","yaol45"]},
+              {"leg6":["yaol16","yaol26","yaol36","yaol46"]},
+              {"leg7":["yaol17","yaol27","yaol37","yaol47"]}
+            ]
+          }
+        }
+
+      ]
+    }
