@@ -65,19 +65,20 @@
 
         .layui-table-view {
             margin-top: 30px;
-            width: 50% !important;
+            width: 39% !important;
             float: left;
         }
 
         #select-info {
             width: 50%;
             float: left;
-            margin-top: 30px;;
+            margin-top: 30px;
+            margin-left: 30px;
         }
 
         #selected {
             width: 100%;
-            min-height: 150px;
+            min-height: 300px;
             border: 1px solid #ccc;
 
             overflow: auto;
@@ -87,11 +88,11 @@
         #selected li {
             float: left;
             list-style: none;
-            width: 20%;
-            padding: 5px;
+            width: auto ;
             margin: 8px;
+            padding-bottom: 5px;
             text-align: center;
-            border: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
         }
 
         #selected li span {
@@ -113,15 +114,23 @@
             line-height: 80px;
             text-align: center;
             margin: 10px;
+        }
+        .name{
+            display: inline-block;
+            width: 60%;
+            height: 24px;
+            float: left;
+            text-align: left;
+            line-height: 24px;
             font-weight: bold;
         }
         .count {
             display: inline-block;
-            width: 50px;
+            width: 30%;
             height: 24px;
-            line-height: 80px;
+            line-height: 24px;
             text-align: center;
-
+            float: right;
             font-weight: bold;
         }
 
@@ -168,12 +177,8 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <div class="layui-input-inline proSelect">
-                            <select name="symptom" lay-verify="required" lay-search="" id="zcySelect">
-                                <!--<option value="">直接选择或搜索选择</option>
-                                <option value="1">头晕</option>
-                                <option value="2">偏头痛</option>
-                                <option value="3">头疼</option>
-                                <option value="4">头热</option>-->
+                            <select name="symptom" lay-filter="symptom" lay-search="" id="zcySelect">
+
                             </select>
                         </div>
                     </div>
@@ -199,11 +204,6 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class="layui-btn-group btn-group">
-                    <button class="layui-btn" type="button" id="addSelect">添加选择框</button>
-                    <button class="layui-btn" type="button" id="addSelectDetail">添加详情</button>
-                    <button class="layui-btn" type="button" id="addIllDetail">添加病情</button>
-                </div>-->
             </form>
             <table class="layui-table" id="preInfoTable" lay-data="{width: 892, height:300}" lay-filter="preInfoTable">
             </table>
@@ -258,23 +258,28 @@
             layer.alert(validateResult.text, {icon: 5});
             return;
         }
+        /*价钱*/
         money=$(".money").val();
+        /*表单信息*/
         formData = $("#formTable").serialize();
+        /*大类类型*/
         title = $("#nav-menu li.active").data("type");
+        /*组合类型 表单信息 和价钱*/
         params = 'title=' + title + '&' + decodeURIComponent(formData, true)+ '&' +money;
         for (var i = 0; i < $("#selected li").length; i++) {
             medicineArr += '{"medicine' + i + '":"' + $("#selected li").eq(i).find("span").text()+'-'+$("#selected li").eq(i).find(".count").val() + '"},';
         }
+        /*处理药方数据json字符串*/
         var medicineData = JSON.parse("[" + medicineArr.substring(0, medicineArr.length - 1) + "]");
         medicineData.forEach(function (item, index) {
             for (var key in item) {
                 medicine += '&' + key + '=' + item[key];
             }
         });
-        /*
-         * title=head&symptom=head1&name=ef&sex=女&telephone=1806392131&medicine0=yaoh1232g&medicine1=yaoh222g&medicine2=yaoh323g
+        data += params + medicine;/*组合数据为 JSON 字符串*/
+        /*字符串类型样式
+         * title=head&symptom=head1&name=ef&sex=女&telephone=1806392131&medicine0=yaoh1232g&medicine1=yaoh-222g&medicine2=yaoh-323g
          * */
-        data += params + medicine;
         if (data != '') {
             layer.open({
                 title: '提示',
@@ -282,7 +287,7 @@
                 btn:["确定","取消"],
                 btn1:function (index,layero) {
                     $.ajax({
-                        url: './medicineList.json',
+                        url: 'static/medicineList.json',
                         type: 'POST',
                         dataType: 'json',
                         contentType: "application/x-www-form-urlencoded;charset=UTF-8",
@@ -291,7 +296,8 @@
 
                           if(res.msg=="成功"){
                               layer.alert('保存成功', {icon: 1,title:'提示',yes:function () {
-                                  window.location.reload();
+                                  layer.close(index);
+                                 window.location.reload();
                               }});
                           }
                         }
@@ -310,8 +316,8 @@
      * 打印按钮
      * */
     $(".print-btn").click(function () {
-       /* window.print()*/
-        $("#ddd").jqprint();
+       /* window.print()
+        $("#ddd").jqprint();*/
 
     });
     /**
@@ -325,6 +331,46 @@
         initData(title);
         renderForm();
     });
+    /**
+     * 选择症状列表
+     * */
+    layui.use(['form'], function () {
+        var form = layui.form;
+        form.on('select(symptom)', function(data){
+            var title = $("#nav-menu li.active").data("type");
+            defaultMedicine(title,data.value);
+        });
+    });
+    /**
+     * 症状列表对默认应药品
+     * */
+    function defaultMedicine(title,value) {
+        $("#selected").empty();
+        var li='';
+        $.ajax({
+            url:'static/medicineList.json',
+            type:'GET',
+            data:value,
+            dataType:'json',
+            success:function (res) {
+                for(var i=0;i<res.data.length;i++){
+                    if(res.data[i].title == title){
+                        for(var j=0;j<res.data[i].detail.symptom.length;j++){
+                            for(var key in res.data[i].detail.symptom[j]){
+                                if(key == value){
+                                    for(var k=0;k<res.data[i].detail.symptom[j][value].length;k++){
+                                        li += '<li id="' + (k+1) + '"><span class="name">' + res.data[i].detail.symptom[j][value][k] + '</span><input value="" name="count" placeholder="请输入用量" class="count"/></li>';
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+                $("#selected").append(li);
+            }
+        })
+    }
     /**
      * 重新渲染form表单
      * */
@@ -351,7 +397,7 @@
     function customValidate() {
         var name = $("input[name=name]").val();
         var money = $(".money").val();
-        var count = $("#selected").find("input[name=count]");
+        var li = $("#selected").find("li");
         var telephone = $("input[name=telephone]").val();
         var symptom = $("select[name=symptom]").val();
         var medicine = $("#selected li").html();
@@ -380,16 +426,12 @@
             rs.text = '请输入金额';
             return rs;
         }
-        console.log(count.length);
-        for (var i=0;i<count.length;i++){
-            console.log(count.eq[i].val());
-            var val=count[i] ;
+        for (var i=0;i<li.length;i++){
+            var val=li.eq(i).find("input[name=count]").val() ;
             if (!val) {
-                console.log(count[i]);
                 rs.flag = true;
                 rs.text = '请输入药量';
                 return rs;
-
             }
         }
         if (!medicine) {
@@ -415,14 +457,16 @@
      * title 所属大类 用于选择关联的症状和药物
      * */
     function initData(title) {
+
         var json = '';
         layui.use(['table', 'form'], function () {
             var table = layui.table;
+
             /**
              * 初始化大类和症状下拉框
              * */
             $.ajax({
-                url: './medicineList.json',
+                url: 'static/medicineList.json',
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -430,27 +474,34 @@
                     for (var i = 0; i < data.data.length; i++) {
                         if (data.data[i].title == title) {
                             for (var j = 0; j < data.data[i].detail.symptom.length; j++) {
-                                option += '<option>' + data.data[i].detail.symptom[j] + '</option>';
+                                for (var key in data.data[i].detail.symptom[j]){
+                                    if(j==0){
+                                        defaultMedicine(title, key);/*初始化默认查询第一条相关的药品*/
+                                    }
+                                    /*加载症状下拉框*/
+                                    option += '<option class="option">' + key + '</option>';
+                                }
                             }
                         }
                     }
                     $("#zcySelect").append(option);
+
                     renderForm();
                 }
             });
             /**
-             * 初始化table表格
+             * 初始化渲染全部药品 table表格
              * */
             $.ajax({
-                url: './medicineList.json',
+                url: 'static/medicineList.json',
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
 
                     for (var i = 0; i < data.data.length; i++) {
-                        if (data.data[i].title == title) {
-                            for (var j = 0; j < data.data[i].detail.medicine.length; j++) {
-                                json += '{"id":"' + parseInt(j + 1) + '","medicine":"' + data.data[i].detail.medicine[j] + '"},';
+                        if (data.data[i].title == "allMedicine") {
+                            for (var j = 0; j < data.data[i].medicine.length; j++) {
+                                json += '{"id":"' + parseInt(j + 1) + '","medicine":"' + data.data[i].medicine[j] + '"},';
                             }
                         }
 
@@ -462,42 +513,21 @@
                         , data: JSON.parse("[" + json.substring(0, json.length - 1) + "]")//数据接口
                         , page: true //开启分页
                         , id: 'reloadTable'
-                        , limit: '5'
+                        , limit: '10'
                         , cols: [[ //表头
                             {type: 'checkbox'}
-                            , {title: '序号', field: 'id', width: 50}
-                            , {field: 'medicine', title: '药方', width: 210, align: 'center'}
+                            , {title: '序号', field: 'id', width: 100, align: 'center'}
+                            , {field: 'medicine', title: '药方', width: 300, align: 'center'}
                             /*, {field: 'count', title: '用量', width: 210, align: 'center', edit: 'text'}*/
                         ]]
-                        /*, done: function () {
-                            var length = $(".layui-table-body tbody").find("tr").length;
-                            for (var i = 0; i < length; i++) {
-                                var text = $(".layui-table-body tbody").find("tr").eq(i).find(".count").text();
-                                if (text == '') {
-                                    $(".layui-table-body.layui-table-main").find("input[name='layTableCheckbox']").eq(i).attr("disabled", 'disabled').removeAttr("checked");
-
-                                } else {
-                                    $(".layui-table-body.layui-table-main").find("input[name='layTableCheckbox']").eq(i).removeAttr("disabled");
-                                }
-                            }
-                        }*/
                     });
 
                 }
             });
             /**
-             * 编辑单元格 count
+             * 选中单元格 添加到右侧展示栏  checkbox
              * */
-            /*table.on('edit(preInfoTable)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
-                $(this).closest("tr").find("input[name='layTableCheckbox']").removeAttr("disabled");
-                renderForm();
-            });*/
-            /**
-             * 选中单元格  checkbox
-             * */
-            table.on('checkbox(preInfoTable)', function (obj) {/*
-                var text = $(this).closest("tr").find("td[data-field=count]").find("div").text();*/
-                /*if (text != '') {*/
+            table.on('checkbox(preInfoTable)', function (obj) {
                     var li = '';
                     if (obj.checked) {
                         li += '<li id="' + obj.data.id + '"><span class="name">' + obj.data.medicine + '</span><input value="" name="count" placeholder="请输入用量" class="count"/></li>';
@@ -512,10 +542,6 @@
                             }
                         }
                     }
-
-               /* } else {
-                    layer.alert("请填写药量！");
-                }*/
             });
         });
     }
